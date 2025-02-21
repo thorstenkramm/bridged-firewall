@@ -1,0 +1,24 @@
+# ipv4 rules loaded into iptables
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+
+# Allow related packets
+-I FORWARD -m physdev --physdev-is-bridged -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+-I INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Allow ICMP Ping
+-A INPUT -p icmp -j ACCEPT
+-A FORWARD -m physdev --physdev-is-bridged -p icmp -j ACCEPT
+
+# Unblock lo device
+-A INPUT -i lo -j ACCEPT
+
+# Allow SSH from bastion hosts
+{% for bastion_host in bastion_hosts %}
+-A INPUT -p tcp --dport 22 -s {{ bastion_host }} -j ACCEPT
+{% endfor %}
+
+# Don't forget this final line
+COMMIT

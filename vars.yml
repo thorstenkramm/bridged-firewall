@@ -1,0 +1,8 @@
+# This is a sample vars file
+bastion_hosts:
+  - 192.168.1.1
+  - 10.100.200.1
+  - 192.168.178.0/24
+api:
+  client: 192.168.99.99
+  port: 8080
